@@ -10,7 +10,7 @@
 	<body class="bg-secondary">
 
 		<div class="container">
-			<s:form action="/novoFuncionarios.action">
+			<s:form action="/salvarFuncionarios.action">
 
 				<div class="card mt-5">
 					<div class="card-header">
