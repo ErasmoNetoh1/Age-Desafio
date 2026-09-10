@@ -54,11 +54,15 @@
 										<s:param name="funcionarioVo.rowid" value="rowid"></s:param>
 									</s:url>
 
+									<s:url action="excluirFuncionarios" var="excluirFuncionario">
+										<s:param name="funcionarioVo.rowid" value="rowid"></s:param>
+									</s:url>
+
 									<a href="${editar}" class="btn btn-warning text-white">
 										<s:text name="label.editar"/>
 									</a>
 
-									<a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao">
+									<a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao" data-url="${excluirFuncionario}">
 										<s:text name="label.excluir"/>
 									</a>
 								</td>
@@ -105,14 +109,22 @@
 					<s:text name="label.nao"/>
 				</a>
 	        	
-				<s:a id="excluir" class="btn btn-primary" style="width: 75px;">
+				<a id="excluir" class="btn btn-primary" style="width: 75px;" href="#">
 					<s:text name="label.sim"/>
-				</s:a>						
+				</a>						
 		      </div>
 		    </div>		    
 		  </div>
 		</div>
 		
 		<script src="webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+		<script>
+			const modalExclusao = document.getElementById("confirmarExclusao");
+
+			modalExclusao.addEventListener("show.bs.modal", function(event) {
+				const botaoExcluir = event.relatedTarget;
+				document.getElementById("excluir").href = botaoExcluir.getAttribute("data-url");
+			});
+		</script>
 	</body>
 </html>
