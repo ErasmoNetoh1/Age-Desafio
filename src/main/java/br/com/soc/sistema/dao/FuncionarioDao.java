@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import br.com.soc.sistema.exception.TechnicalException;
 import br.com.soc.sistema.vo.FuncionarioVo;
 
 public class FuncionarioDao extends Dao {
@@ -120,6 +121,34 @@ public class FuncionarioDao extends Dao {
 			e.printStackTrace();
 		}
 		
+	}
+
+	public void deleteFuncionario(String codigo) {
+		String deleteCompromissos = "DELETE FROM compromisso WHERE id_funcionario = ?";
+		String deleteFuncionario = "DELETE FROM funcionario WHERE rowid = ?";
+		long codigoFuncionario = Long.parseLong(codigo);
+
+		try (Connection con = getConexao()) {
+			con.setAutoCommit(false);
+
+			try (
+				PreparedStatement psCompromissos = con.prepareStatement(deleteCompromissos);
+				PreparedStatement psFuncionario = con.prepareStatement(deleteFuncionario)
+			) {
+				psCompromissos.setLong(1, codigoFuncionario);
+				psCompromissos.executeUpdate();
+
+				psFuncionario.setLong(1, codigoFuncionario);
+				psFuncionario.executeUpdate();
+
+				con.commit();
+			} catch (SQLException e) {
+				con.rollback();
+				throw e;
+			}
+		} catch (SQLException e) {
+			throw new TechnicalException("Nao foi possivel excluir o funcionario", e);
+		}
 	}
 	
 }

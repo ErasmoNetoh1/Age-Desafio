@@ -44,6 +44,15 @@ public class FuncionarioBusiness {
 			throw new BusinessException("Não foi possível realizar a alteração do registro");
 		}
 	}
+
+	public void excluirFuncionario(String codigo) {
+		try {
+			Integer.parseInt(codigo);
+			dao.deleteFuncionario(codigo);
+		} catch (Exception e) {
+			throw new BusinessException("Nao foi possivel realizar a exclusao do registro");
+		}
+	}
 	
 	public List<FuncionarioVo> filtrarFuncionarios(FuncionarioFilter filter){
 		List<FuncionarioVo> funcionarios = new ArrayList<>();
