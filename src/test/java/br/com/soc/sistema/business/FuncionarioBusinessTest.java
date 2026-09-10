@@ -1,5 +1,7 @@
 package br.com.soc.sistema.business;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import br.com.soc.sistema.exception.BusinessException;
@@ -13,6 +15,18 @@ public class FuncionarioBusinessTest {
 		funcionario.setNome("");
 		
 		new FuncionarioBusiness().salvarFuncionario(funcionario);
+	}
+	
+	@Test
+	public void deveAlterarNomeDeFuncionario() {
+		FuncionarioBusiness business = new FuncionarioBusiness();
+		FuncionarioVo funcionario = new FuncionarioVo("1", "João Atualizado");
+		
+		business.alterarFuncionario(funcionario);
+		
+		FuncionarioVo funcionarioAlterado = business.buscarFuncionarioPor("1");
+		
+		assertEquals("João Atualizado", funcionarioAlterado.getNome());
 	}
 	
 }

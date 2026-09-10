@@ -33,6 +33,18 @@ public class FuncionarioBusiness {
 		
 	}	
 	
+	public void alterarFuncionario(FuncionarioVo funcionarioVo) {
+		try {
+			if(funcionarioVo.getNome().isEmpty()) {
+				throw new IllegalArgumentException("Nome não pode ser em branco");
+			}
+			dao.updateFuncionario(funcionarioVo);
+			
+		} catch(Exception e){
+			throw new BusinessException("Não foi possível realizar a alteração do registro");
+		}
+	}
+	
 	public List<FuncionarioVo> filtrarFuncionarios(FuncionarioFilter filter){
 		List<FuncionarioVo> funcionarios = new ArrayList<>();
 		
