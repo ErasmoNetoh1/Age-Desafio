@@ -13,8 +13,8 @@
 				<div class="col-sm p-0">
 					<s:url action="todosFuncionarios" var="funcionarios"/>
 					<a href="${funcionarios}" class="btn btn-success">Funcionarios</a>
-					<s:url action="todosCompromissos" var="compromissos"/>
-					<a href="${compromissos}" class="btn btn-info text-white">Compromissos</a>
+					<s:url action="todosAgendas" var="agendas"/>
+					<a href="${agendas}" class="btn btn-info text-white">Agendas</a>
 				</div>
 			</div>
 
@@ -23,35 +23,38 @@
 					<thead>
 						<tr>
 							<th><s:text name="label.id"/></th>
-							<th><s:text name="label.nome"/></th>
-							<th><s:text name="label.periodo.disponivel"/></th>
+							<th><s:text name="label.funcionario"/></th>
+							<th><s:text name="label.agenda"/></th>
+							<th><s:text name="label.data"/></th>
+							<th><s:text name="label.horario"/></th>
 							<th class="text-end"><s:text name="label.acao"/></th>
 						</tr>
 					</thead>
 					<tbody>
-						<s:iterator value="agendas">
+						<s:iterator value="compromissos">
 							<tr>
 								<td>${rowid}</td>
-								<td>${nome}</td>
-								<td>${periodoDisponivel.descricao}</td>
+								<td>${nomeFuncionario}</td>
+								<td>${nomeAgenda}</td>
+								<td>${data}</td>
+								<td>${horario}</td>
 								<td class="text-end">
-									<s:url action="editarAgendas" var="editar">
-										<s:param name="agendaVo.rowid" value="rowid"/>
+									<s:url action="editarCompromissos" var="editar">
+										<s:param name="compromissoVo.rowid" value="rowid"/>
 									</s:url>
-									<s:url action="excluirAgendas" var="excluirAgenda">
-										<s:param name="agendaVo.rowid" value="rowid"/>
+									<s:url action="excluirCompromissos" var="excluirCompromisso">
+										<s:param name="compromissoVo.rowid" value="rowid"/>
 									</s:url>
-
 									<a href="${editar}" class="btn btn-warning text-white">Editar</a>
-									<a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao" data-url="${excluirAgenda}">Excluir</a>
+									<a href="#" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmarExclusao" data-url="${excluirCompromisso}">Excluir</a>
 								</td>
 							</tr>
 						</s:iterator>
 					</tbody>
 					<tfoot class="table-secondary">
 						<tr>
-							<td colspan="4">
-								<s:url action="novoAgendas" var="novo"/>
+							<td colspan="6">
+								<s:url action="novoCompromissos" var="novo"/>
 								<a href="${novo}" class="btn btn-success">Novo</a>
 							</td>
 						</tr>
@@ -67,9 +70,7 @@
 						<h5 class="modal-title"><s:text name="label.modal.titulo"/></h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 					</div>
-					<div class="modal-body">
-						<span><s:text name="label.modal.corpo"/></span>
-					</div>
+					<div class="modal-body"><span><s:text name="label.modal.corpo"/></span></div>
 					<div class="modal-footer">
 						<a class="btn btn-secondary" data-bs-dismiss="modal">Nao</a>
 						<a id="excluir" class="btn btn-primary" style="width: 75px;" href="#">Sim</a>
@@ -81,10 +82,8 @@
 		<script src="webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 		<script>
 			const modalExclusao = document.getElementById("confirmarExclusao");
-
 			modalExclusao.addEventListener("show.bs.modal", function(event) {
-				const botaoExcluir = event.relatedTarget;
-				document.getElementById("excluir").href = botaoExcluir.getAttribute("data-url");
+				document.getElementById("excluir").href = event.relatedTarget.getAttribute("data-url");
 			});
 		</script>
 	</body>
