@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import br.com.soc.sistema.exception.BusinessException;
+import br.com.soc.sistema.filter.RelatorioFilter;
 import br.com.soc.sistema.infra.PeriodoDisponivel;
 import br.com.soc.sistema.vo.AgendaVo;
 import br.com.soc.sistema.vo.CompromissoVo;
@@ -103,6 +104,33 @@ public class CompromissoBusinessTest {
 		business.excluirCompromisso(compromisso.getRowid());
 
 		assertNull(business.buscarCompromissoPor(compromisso.getRowid()));
+	}
+
+	@Test
+	public void deveBuscarCompromissosDentroDoPeriodoInformado() {
+		String codigoFuncionario = criarFuncionario("Funcionario do relatorio");
+		String codigoAgenda = criarAgenda("Agenda do relatorio", PeriodoDisponivel.AMBOS);
+		CompromissoBusiness business = new CompromissoBusiness();
+
+		business.salvarCompromisso(criarCompromisso(codigoFuncionario, codigoAgenda, "2026-09-10", "08:00"));
+		business.salvarCompromisso(criarCompromisso(codigoFuncionario, codigoAgenda, "2026-09-12", "09:00"));
+
+		RelatorioFilter filtro = new RelatorioFilter();
+		filtro.setDataInicial("2026-09-11");
+		filtro.setDataFinal("2026-09-12");
+
+		assertEquals(1, business.buscarCompromissosPorPeriodo(filtro).stream()
+				.filter(item -> item.getNomeFuncionario().equals("Funcionario do relatorio"))
+				.count());
+	}
+
+	@Test(expected = BusinessException.class)
+	public void naoDeveBuscarRelatorioComPeriodoInvalido() {
+		RelatorioFilter filtro = new RelatorioFilter();
+		filtro.setDataInicial("2026-09-13");
+		filtro.setDataFinal("2026-09-12");
+
+		new CompromissoBusiness().buscarCompromissosPorPeriodo(filtro);
 	}
 
 	private String criarFuncionario(String nome) {

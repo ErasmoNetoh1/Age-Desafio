@@ -6,6 +6,7 @@ import java.util.List;
 
 import br.com.soc.sistema.dao.CompromissoDao;
 import br.com.soc.sistema.exception.BusinessException;
+import br.com.soc.sistema.filter.RelatorioFilter;
 import br.com.soc.sistema.infra.PeriodoDisponivel;
 import br.com.soc.sistema.vo.AgendaVo;
 import br.com.soc.sistema.vo.CompromissoVo;
@@ -29,6 +30,25 @@ public class CompromissoBusiness {
 
 	public List<CompromissoVo> trazerTodosOsCompromissos() {
 		return dao.findAllCompromissos();
+	}
+
+	public List<CompromissoVo> buscarCompromissosPorPeriodo(RelatorioFilter filtro) {
+		try {
+			if (filtro == null || estaVazio(filtro.getDataInicial()) || estaVazio(filtro.getDataFinal()))
+				throw new BusinessException("As datas inicial e final devem ser informadas");
+
+			LocalDate dataInicial = LocalDate.parse(filtro.getDataInicial());
+			LocalDate dataFinal = LocalDate.parse(filtro.getDataFinal());
+
+			if (dataInicial.isAfter(dataFinal))
+				throw new BusinessException("A data inicial nao pode ser maior que a data final");
+
+			return dao.findCompromissosPorPeriodo(dataInicial, dataFinal);
+		} catch (BusinessException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BusinessException("As datas informadas sao invalidas");
+		}
 	}
 
 	public void salvarCompromisso(CompromissoVo compromissoVo) {
