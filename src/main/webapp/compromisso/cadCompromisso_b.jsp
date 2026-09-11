@@ -15,6 +15,8 @@
 					<a href="${funcionarios}" class="btn btn-success">Funcionarios</a>
 					<s:url action="todosAgendas" var="agendas"/>
 					<a href="${agendas}" class="btn btn-info text-white">Agendas</a>
+					<s:url action="todosRelatorios" var="relatorios"/>
+					<a href="${relatorios}" class="btn btn-primary">Relatorios</a>
 				</div>
 			</div>
 
