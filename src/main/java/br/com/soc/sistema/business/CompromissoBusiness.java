@@ -33,26 +33,57 @@ public class CompromissoBusiness {
 
 	public void salvarCompromisso(CompromissoVo compromissoVo) {
 		try {
-			validarCamposObrigatorios(compromissoVo);
-			FuncionarioVo funcionario = funcionarioBusiness.buscarFuncionarioPor(compromissoVo.getCodigoFuncionario());
-			AgendaVo agenda = agendaBusiness.buscarAgendaPor(compromissoVo.getCodigoAgenda());
-
-			if (funcionario == null)
-				throw new BusinessException("Funcionario informado nao existe");
-
-			if (agenda == null)
-				throw new BusinessException("Agenda informada nao existe");
-
-			LocalDate.parse(compromissoVo.getData());
-			LocalTime horario = LocalTime.parse(compromissoVo.getHorario());
-			validarDisponibilidade(agenda.getPeriodoDisponivel(), horario);
-
+			validarCompromisso(compromissoVo);
 			dao.insertCompromisso(compromissoVo);
 		} catch (BusinessException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new BusinessException("Nao foi possivel realizar a inclusao do compromisso");
 		}
+	}
+
+	public void alterarCompromisso(CompromissoVo compromissoVo) {
+		try {
+			validarCompromisso(compromissoVo);
+			dao.updateCompromisso(compromissoVo);
+		} catch (BusinessException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new BusinessException("Nao foi possivel realizar a alteracao do compromisso");
+		}
+	}
+
+	public void excluirCompromisso(String codigo) {
+		try {
+			Integer.parseInt(codigo);
+			dao.deleteCompromisso(codigo);
+		} catch (Exception e) {
+			throw new BusinessException("Nao foi possivel realizar a exclusao do compromisso");
+		}
+	}
+
+	public CompromissoVo buscarCompromissoPor(String codigo) {
+		try {
+			return dao.findByCodigo(Integer.parseInt(codigo));
+		} catch (NumberFormatException e) {
+			throw new BusinessException("Foi informado um caracter no lugar de um numero");
+		}
+	}
+
+	private void validarCompromisso(CompromissoVo compromissoVo) {
+		validarCamposObrigatorios(compromissoVo);
+		FuncionarioVo funcionario = funcionarioBusiness.buscarFuncionarioPor(compromissoVo.getCodigoFuncionario());
+		AgendaVo agenda = agendaBusiness.buscarAgendaPor(compromissoVo.getCodigoAgenda());
+
+		if (funcionario == null)
+			throw new BusinessException("Funcionario informado nao existe");
+
+		if (agenda == null)
+			throw new BusinessException("Agenda informada nao existe");
+
+		LocalDate.parse(compromissoVo.getData());
+		LocalTime horario = LocalTime.parse(compromissoVo.getHorario());
+		validarDisponibilidade(agenda.getPeriodoDisponivel(), horario);
 	}
 
 	private void validarCamposObrigatorios(CompromissoVo compromissoVo) {

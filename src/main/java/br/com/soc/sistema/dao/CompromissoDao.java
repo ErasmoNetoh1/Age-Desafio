@@ -50,15 +50,7 @@ public class CompromissoDao extends Dao {
 			List<CompromissoVo> compromissos = new ArrayList<>();
 
 			while (rs.next()) {
-				CompromissoVo compromisso = new CompromissoVo();
-				compromisso.setRowid(rs.getString("id"));
-				compromisso.setCodigoFuncionario(rs.getString("codigo_funcionario"));
-				compromisso.setNomeFuncionario(rs.getString("nome_funcionario"));
-				compromisso.setCodigoAgenda(rs.getString("codigo_agenda"));
-				compromisso.setNomeAgenda(rs.getString("nome_agenda"));
-				compromisso.setData(rs.getDate("data").toLocalDate().toString());
-				compromisso.setHorario(rs.getTime("horario").toLocalTime().toString());
-				compromissos.add(compromisso);
+				compromissos.add(montarCompromisso(rs));
 			}
 
 			return compromissos;
@@ -67,6 +59,63 @@ public class CompromissoDao extends Dao {
 		}
 
 		return Collections.emptyList();
+	}
+
+	public CompromissoVo findByCodigo(Integer codigo) {
+		String query = "SELECT c.rowid id, c.id_funcionario codigo_funcionario, f.nm_funcionario nome_funcionario, "
+				+ "c.id_agenda codigo_agenda, a.nm_agenda nome_agenda, c.dt_compromisso data, c.hr_compromisso horario "
+				+ "FROM compromisso c "
+				+ "INNER JOIN funcionario f ON f.rowid = c.id_funcionario "
+				+ "INNER JOIN agenda a ON a.rowid = c.id_agenda "
+				+ "WHERE c.rowid = ?";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setInt(1, codigo);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next() ? montarCompromisso(rs) : null;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public void updateCompromisso(CompromissoVo compromissoVo) {
+		String query = "UPDATE compromisso SET id_funcionario = ?, id_agenda = ?, dt_compromisso = ?, hr_compromisso = ? "
+				+ "WHERE rowid = ?";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setLong(1, Long.parseLong(compromissoVo.getCodigoFuncionario()));
+			ps.setLong(2, Long.parseLong(compromissoVo.getCodigoAgenda()));
+			ps.setDate(3, Date.valueOf(LocalDate.parse(compromissoVo.getData())));
+			ps.setTime(4, Time.valueOf(LocalTime.parse(compromissoVo.getHorario())));
+			ps.setLong(5, Long.parseLong(compromissoVo.getRowid()));
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteCompromisso(String codigo) {
+		String query = "DELETE FROM compromisso WHERE rowid = ?";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setLong(1, Long.parseLong(codigo));
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean existeCompromissoParaAgenda(String codigoAgenda) {
@@ -86,5 +135,17 @@ public class CompromissoDao extends Dao {
 		}
 
 		return false;
+	}
+
+	private CompromissoVo montarCompromisso(ResultSet rs) throws SQLException {
+		CompromissoVo compromisso = new CompromissoVo();
+		compromisso.setRowid(rs.getString("id"));
+		compromisso.setCodigoFuncionario(rs.getString("codigo_funcionario"));
+		compromisso.setNomeFuncionario(rs.getString("nome_funcionario"));
+		compromisso.setCodigoAgenda(rs.getString("codigo_agenda"));
+		compromisso.setNomeAgenda(rs.getString("nome_agenda"));
+		compromisso.setData(rs.getDate("data").toLocalDate().toString());
+		compromisso.setHorario(rs.getTime("horario").toLocalTime().toString());
+		return compromisso;
 	}
 }

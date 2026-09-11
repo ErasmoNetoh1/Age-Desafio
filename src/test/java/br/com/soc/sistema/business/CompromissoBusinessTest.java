@@ -2,6 +2,7 @@ package br.com.soc.sistema.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -50,6 +51,58 @@ public class CompromissoBusinessTest {
 
 		new CompromissoBusiness().salvarCompromisso(
 				criarCompromisso(codigoFuncionario, codigoAgenda, "2026-09-12", "18:00"));
+	}
+
+	@Test
+	public void deveAlterarCompromisso() {
+		String nomeFuncionario = "Funcionario compromisso alterado";
+		String codigoFuncionario = criarFuncionario(nomeFuncionario);
+		String codigoAgendaManha = criarAgenda("Agenda original", PeriodoDisponivel.MANHA);
+		String codigoAgendaTarde = criarAgenda("Agenda alterada", PeriodoDisponivel.TARDE);
+		CompromissoBusiness business = new CompromissoBusiness();
+
+		business.salvarCompromisso(criarCompromisso(codigoFuncionario, codigoAgendaManha, "2026-09-12", "08:00"));
+
+		CompromissoVo compromisso = business.trazerTodosOsCompromissos()
+				.stream()
+				.filter(item -> item.getNomeFuncionario().equals(nomeFuncionario))
+				.findFirst()
+				.orElse(null);
+
+		assertNotNull(compromisso);
+		compromisso.setCodigoAgenda(codigoAgendaTarde);
+		compromisso.setData("2026-09-13");
+		compromisso.setHorario("13:00");
+
+		business.alterarCompromisso(compromisso);
+
+		CompromissoVo compromissoAlterado = business.buscarCompromissoPor(compromisso.getRowid());
+
+		assertEquals(codigoAgendaTarde, compromissoAlterado.getCodigoAgenda());
+		assertEquals("2026-09-13", compromissoAlterado.getData());
+		assertEquals("13:00", compromissoAlterado.getHorario());
+	}
+
+	@Test
+	public void deveExcluirCompromissoPeloCodigo() {
+		String nomeFuncionario = "Funcionario compromisso excluido";
+		String codigoFuncionario = criarFuncionario(nomeFuncionario);
+		String codigoAgenda = criarAgenda("Agenda para exclusao de compromisso", PeriodoDisponivel.AMBOS);
+		CompromissoBusiness business = new CompromissoBusiness();
+
+		business.salvarCompromisso(criarCompromisso(codigoFuncionario, codigoAgenda, "2026-09-12", "10:00"));
+
+		CompromissoVo compromisso = business.trazerTodosOsCompromissos()
+				.stream()
+				.filter(item -> item.getNomeFuncionario().equals(nomeFuncionario))
+				.findFirst()
+				.orElse(null);
+
+		assertNotNull(compromisso);
+
+		business.excluirCompromisso(compromisso.getRowid());
+
+		assertNull(business.buscarCompromissoPor(compromisso.getRowid()));
 	}
 
 	private String criarFuncionario(String nome) {
