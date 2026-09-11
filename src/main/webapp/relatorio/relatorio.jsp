@@ -30,6 +30,11 @@
 						<div class="col-sm-3">
 							<button class="btn btn-primary"><s:text name="label.gerar"/></button>
 							<button type="reset" class="btn btn-secondary">Limpar</button>
+							<s:url action="exportarRelatorios" var="exportar">
+								<s:param name="filtro.dataInicial" value="filtro.dataInicial"/>
+								<s:param name="filtro.dataFinal" value="filtro.dataFinal"/>
+							</s:url>
+							<a href="${exportar}" class="btn btn-success">Exportar XLSX</a>
 						</div>
 					</div>
 				</s:form>
