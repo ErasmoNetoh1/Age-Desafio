@@ -9,6 +9,8 @@ import org.junit.Test;
 import br.com.soc.sistema.exception.BusinessException;
 import br.com.soc.sistema.infra.PeriodoDisponivel;
 import br.com.soc.sistema.vo.AgendaVo;
+import br.com.soc.sistema.vo.CompromissoVo;
+import br.com.soc.sistema.vo.FuncionarioVo;
 
 public class AgendaBusinessTest {
 
@@ -86,5 +88,39 @@ public class AgendaBusinessTest {
 		business.excluirAgenda(agenda.getRowid());
 
 		assertNull(business.buscarAgendaPor(agenda.getRowid()));
+	}
+
+	@Test(expected = BusinessException.class)
+	public void naoDeveExcluirAgendaComCompromissos() {
+		String nomeFuncionario = "Funcionario da agenda bloqueada";
+		String nomeAgenda = "Agenda com compromisso";
+		FuncionarioBusiness funcionarioBusiness = new FuncionarioBusiness();
+		AgendaBusiness agendaBusiness = new AgendaBusiness();
+
+		funcionarioBusiness.salvarFuncionario(new FuncionarioVo(null, nomeFuncionario));
+		agendaBusiness.salvarAgenda(new AgendaVo(null, nomeAgenda, PeriodoDisponivel.AMBOS));
+
+		FuncionarioVo funcionario = funcionarioBusiness.trazerTodosOsFuncionarios()
+				.stream()
+				.filter(item -> item.getNome().equals(nomeFuncionario))
+				.findFirst()
+				.orElse(null);
+		AgendaVo agenda = agendaBusiness.trazerTodasAsAgendas()
+				.stream()
+				.filter(item -> item.getNome().equals(nomeAgenda))
+				.findFirst()
+				.orElse(null);
+
+		assertNotNull(funcionario);
+		assertNotNull(agenda);
+
+		CompromissoVo compromisso = new CompromissoVo();
+		compromisso.setCodigoFuncionario(funcionario.getRowid());
+		compromisso.setCodigoAgenda(agenda.getRowid());
+		compromisso.setData("2026-09-12");
+		compromisso.setHorario("12:00");
+		new CompromissoBusiness().salvarCompromisso(compromisso);
+
+		agendaBusiness.excluirAgenda(agenda.getRowid());
 	}
 }

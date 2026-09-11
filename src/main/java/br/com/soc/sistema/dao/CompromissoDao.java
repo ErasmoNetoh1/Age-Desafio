@@ -68,4 +68,23 @@ public class CompromissoDao extends Dao {
 
 		return Collections.emptyList();
 	}
+
+	public boolean existeCompromissoParaAgenda(String codigoAgenda) {
+		String query = "SELECT COUNT(*) quantidade FROM compromisso WHERE id_agenda = ?";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setLong(1, Long.parseLong(codigoAgenda));
+
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next() && rs.getInt("quantidade") > 0;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 }

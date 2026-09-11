@@ -3,15 +3,18 @@ package br.com.soc.sistema.business;
 import java.util.List;
 
 import br.com.soc.sistema.dao.AgendaDao;
+import br.com.soc.sistema.dao.CompromissoDao;
 import br.com.soc.sistema.exception.BusinessException;
 import br.com.soc.sistema.vo.AgendaVo;
 
 public class AgendaBusiness {
 
 	private AgendaDao dao;
+	private CompromissoDao compromissoDao;
 
 	public AgendaBusiness() {
 		dao = new AgendaDao();
+		compromissoDao = new CompromissoDao();
 	}
 
 	public List<AgendaVo> trazerTodasAsAgendas() {
@@ -39,7 +42,13 @@ public class AgendaBusiness {
 	public void excluirAgenda(String codigo) {
 		try {
 			Integer.parseInt(codigo);
+
+			if (compromissoDao.existeCompromissoParaAgenda(codigo))
+				throw new BusinessException("Nao e possivel excluir uma agenda com compromissos cadastrados");
+
 			dao.deleteAgenda(codigo);
+		} catch (BusinessException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new BusinessException("Nao foi possivel realizar a exclusao da agenda");
 		}
