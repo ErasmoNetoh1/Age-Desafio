@@ -78,6 +78,9 @@
 								<a href="${novo}" class="btn btn-success">
 									<s:text name="label.novo"/>
 								</a>
+
+								<s:url action="todosAgendas" var="agendas"/>
+								<a href="${agendas}" class="btn btn-info text-white">Agendas</a>
 							</td>
 						</tr>
 					</tfoot>				
