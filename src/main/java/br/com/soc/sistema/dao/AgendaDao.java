@@ -54,4 +54,60 @@ public class AgendaDao extends Dao {
 
 		return Collections.emptyList();
 	}
+
+	public AgendaVo findByCodigo(Integer codigo) {
+		String query = "SELECT rowid id, nm_agenda nome, tp_periodo_disponivel periodo "
+				+ "FROM agenda WHERE rowid = ?";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setInt(1, codigo);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					AgendaVo agenda = new AgendaVo();
+					agenda.setRowid(rs.getString("id"));
+					agenda.setNome(rs.getString("nome"));
+					agenda.setPeriodoDisponivel(PeriodoDisponivel.buscarPor(rs.getString("periodo")));
+					return agenda;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public void updateAgenda(AgendaVo agendaVo) {
+		String query = "UPDATE agenda SET nm_agenda = ?, tp_periodo_disponivel = ? WHERE rowid = ?";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setString(1, agendaVo.getNome());
+			ps.setString(2, agendaVo.getPeriodoDisponivel().getCodigo());
+			ps.setLong(3, Long.parseLong(agendaVo.getRowid()));
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void deleteAgenda(String codigo) {
+		String query = "DELETE FROM agenda WHERE rowid = ?";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setLong(1, Long.parseLong(codigo));
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

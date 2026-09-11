@@ -2,6 +2,7 @@ package br.com.soc.sistema.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -40,5 +41,50 @@ public class AgendaBusinessTest {
 
 		assertNotNull(agenda);
 		assertEquals(PeriodoDisponivel.MANHA, agenda.getPeriodoDisponivel());
+	}
+
+	@Test
+	public void deveAlterarAgenda() {
+		AgendaBusiness business = new AgendaBusiness();
+		String nome = "Agenda para alterar";
+
+		business.salvarAgenda(new AgendaVo(null, nome, PeriodoDisponivel.MANHA));
+
+		AgendaVo agenda = business.trazerTodasAsAgendas()
+				.stream()
+				.filter(item -> item.getNome().equals(nome))
+				.findFirst()
+				.orElse(null);
+
+		assertNotNull(agenda);
+		agenda.setNome("Agenda alterada");
+		agenda.setPeriodoDisponivel(PeriodoDisponivel.TARDE);
+
+		business.alterarAgenda(agenda);
+
+		AgendaVo agendaAlterada = business.buscarAgendaPor(agenda.getRowid());
+
+		assertEquals("Agenda alterada", agendaAlterada.getNome());
+		assertEquals(PeriodoDisponivel.TARDE, agendaAlterada.getPeriodoDisponivel());
+	}
+
+	@Test
+	public void deveExcluirAgendaPeloCodigo() {
+		AgendaBusiness business = new AgendaBusiness();
+		String nome = "Agenda para exclusao";
+
+		business.salvarAgenda(new AgendaVo(null, nome, PeriodoDisponivel.AMBOS));
+
+		AgendaVo agenda = business.trazerTodasAsAgendas()
+				.stream()
+				.filter(item -> item.getNome().equals(nome))
+				.findFirst()
+				.orElse(null);
+
+		assertNotNull(agenda);
+
+		business.excluirAgenda(agenda.getRowid());
+
+		assertNull(business.buscarAgendaPor(agenda.getRowid()));
 	}
 }

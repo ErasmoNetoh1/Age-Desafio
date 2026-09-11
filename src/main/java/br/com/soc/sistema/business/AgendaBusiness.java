@@ -27,6 +27,32 @@ public class AgendaBusiness {
 		}
 	}
 
+	public void alterarAgenda(AgendaVo agendaVo) {
+		try {
+			validarAgenda(agendaVo);
+			dao.updateAgenda(agendaVo);
+		} catch (Exception e) {
+			throw new BusinessException("Nao foi possivel realizar a alteracao da agenda");
+		}
+	}
+
+	public void excluirAgenda(String codigo) {
+		try {
+			Integer.parseInt(codigo);
+			dao.deleteAgenda(codigo);
+		} catch (Exception e) {
+			throw new BusinessException("Nao foi possivel realizar a exclusao da agenda");
+		}
+	}
+
+	public AgendaVo buscarAgendaPor(String codigo) {
+		try {
+			return dao.findByCodigo(Integer.parseInt(codigo));
+		} catch (NumberFormatException e) {
+			throw new BusinessException("Foi informado um caracter no lugar de um numero");
+		}
+	}
+
 	private void validarAgenda(AgendaVo agendaVo) {
 		if (agendaVo == null || agendaVo.getNome() == null || agendaVo.getNome().trim().isEmpty())
 			throw new IllegalArgumentException("Nome da agenda nao pode ser em branco");
