@@ -28,11 +28,10 @@ public abstract class Dao implements AutoCloseable{
 		 try {	 
 			 Class.forName("org.h2.Driver");
 			 con = DriverManager.getConnection(urlBuilder.toString());
-        } catch (SQLException ex) {
-        	ex.printStackTrace();
+		 } catch (SQLException ex) {
             throw new TechnicalException("Ocorreu um problema na tentativa de conexao", ex);
         } catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Driver do banco de dados nao foi encontrado", e);
 		}
 	}	
 	
@@ -49,9 +48,9 @@ public abstract class Dao implements AutoCloseable{
 	@Override
 	public void close() throws Exception {
 		try{
-			fechar();		
+			fechar();
 		}catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel encerrar a conexao", e);
 		}
 	}
 

@@ -9,9 +9,9 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import br.com.soc.sistema.exception.TechnicalException;
 import br.com.soc.sistema.vo.CompromissoVo;
 
 public class CompromissoDao extends Dao {
@@ -30,7 +30,7 @@ public class CompromissoDao extends Dao {
 			ps.setTime(4, Time.valueOf(LocalTime.parse(compromissoVo.getHorario())));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel incluir o compromisso", e);
 		}
 	}
 
@@ -55,10 +55,8 @@ public class CompromissoDao extends Dao {
 
 			return compromissos;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar os compromissos", e);
 		}
-
-		return Collections.emptyList();
 	}
 
 	public List<CompromissoVo> findCompromissosPorPeriodo(LocalDate dataInicial, LocalDate dataFinal) {
@@ -87,10 +85,8 @@ public class CompromissoDao extends Dao {
 				return compromissos;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar os compromissos", e);
 		}
-
-		return Collections.emptyList();
 	}
 
 	public List<CompromissoVo> findCompromissosPorAgenda(String codigoAgenda) {
@@ -118,10 +114,8 @@ public class CompromissoDao extends Dao {
 				return compromissos;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar os compromissos da agenda", e);
 		}
-
-		return Collections.emptyList();
 	}
 
 	public CompromissoVo findByCodigo(Integer codigo) {
@@ -142,10 +136,8 @@ public class CompromissoDao extends Dao {
 				return rs.next() ? montarCompromisso(rs) : null;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar o compromisso", e);
 		}
-
-		return null;
 	}
 
 	public void updateCompromisso(CompromissoVo compromissoVo) {
@@ -163,7 +155,7 @@ public class CompromissoDao extends Dao {
 			ps.setLong(5, Long.parseLong(compromissoVo.getRowid()));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel alterar o compromisso", e);
 		}
 	}
 
@@ -177,7 +169,7 @@ public class CompromissoDao extends Dao {
 			ps.setLong(1, Long.parseLong(codigo));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel excluir o compromisso", e);
 		}
 	}
 
@@ -194,10 +186,8 @@ public class CompromissoDao extends Dao {
 				return rs.next() && rs.getInt("quantidade") > 0;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar compromissos da agenda", e);
 		}
-
-		return false;
 	}
 
 	private CompromissoVo montarCompromisso(ResultSet rs) throws SQLException {

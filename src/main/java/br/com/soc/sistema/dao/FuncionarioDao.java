@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import br.com.soc.sistema.exception.TechnicalException;
@@ -23,7 +22,7 @@ public class FuncionarioDao extends Dao {
 			ps.setString(i++, funcionarioVo.getNome());
 			ps.executeUpdate();
 		}catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel incluir o funcionario", e);
 		}
 	}
 	
@@ -45,10 +44,8 @@ public class FuncionarioDao extends Dao {
 			}
 			return funcionarios;
 		}catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar os funcionarios", e);
 		}
-		
-		return Collections.emptyList();
 	}
 	
 	public List<FuncionarioVo> findAllByNome(String nome){
@@ -75,9 +72,8 @@ public class FuncionarioDao extends Dao {
 				return funcionarios;
 			}
 		}catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar os funcionarios", e);
 		}		
-		return Collections.emptyList();
 	}
 	
 	public FuncionarioVo findByCodigo(Integer codigo){
@@ -101,9 +97,8 @@ public class FuncionarioDao extends Dao {
 				return vo;
 			}
 		}catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar o funcionario", e);
 		}		
-		return null;
 	}
 	
 	public void updateFuncionario(FuncionarioVo funcionarioVo) {
@@ -118,7 +113,7 @@ public class FuncionarioDao extends Dao {
 					ps.setLong(2, Long.parseLong(funcionarioVo.getRowid()));
 					ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel alterar o funcionario", e);
 		}
 		
 	}

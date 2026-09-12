@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import br.com.soc.sistema.exception.TechnicalException;
 import br.com.soc.sistema.infra.PeriodoDisponivel;
 import br.com.soc.sistema.vo.AgendaVo;
 
@@ -24,7 +24,7 @@ public class AgendaDao extends Dao {
 			ps.setString(2, agendaVo.getPeriodoDisponivel().getCodigo());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel incluir a agenda", e);
 		}
 	}
 
@@ -49,10 +49,8 @@ public class AgendaDao extends Dao {
 
 			return agendas;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar as agendas", e);
 		}
-
-		return Collections.emptyList();
 	}
 
 	public AgendaVo findByCodigo(Integer codigo) {
@@ -75,7 +73,7 @@ public class AgendaDao extends Dao {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel consultar a agenda", e);
 		}
 
 		return null;
@@ -93,7 +91,7 @@ public class AgendaDao extends Dao {
 			ps.setLong(3, Long.parseLong(agendaVo.getRowid()));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel alterar a agenda", e);
 		}
 	}
 
@@ -107,7 +105,7 @@ public class AgendaDao extends Dao {
 			ps.setLong(1, Long.parseLong(codigo));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new TechnicalException("Nao foi possivel excluir a agenda", e);
 		}
 	}
 }
