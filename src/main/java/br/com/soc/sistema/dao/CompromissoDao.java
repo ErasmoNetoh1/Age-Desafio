@@ -93,6 +93,37 @@ public class CompromissoDao extends Dao {
 		return Collections.emptyList();
 	}
 
+	public List<CompromissoVo> findCompromissosPorAgenda(String codigoAgenda) {
+		String query = "SELECT c.rowid id, c.id_funcionario codigo_funcionario, f.nm_funcionario nome_funcionario, "
+				+ "c.id_agenda codigo_agenda, a.nm_agenda nome_agenda, c.dt_compromisso data, c.hr_compromisso horario "
+				+ "FROM compromisso c "
+				+ "INNER JOIN funcionario f ON f.rowid = c.id_funcionario "
+				+ "INNER JOIN agenda a ON a.rowid = c.id_agenda "
+				+ "WHERE c.id_agenda = ? "
+				+ "ORDER BY c.dt_compromisso, c.hr_compromisso";
+
+		try (
+			Connection con = getConexao();
+			PreparedStatement ps = con.prepareStatement(query)
+		) {
+			ps.setLong(1, Long.parseLong(codigoAgenda));
+
+			try (ResultSet rs = ps.executeQuery()) {
+				List<CompromissoVo> compromissos = new ArrayList<>();
+
+				while (rs.next()) {
+					compromissos.add(montarCompromisso(rs));
+				}
+
+				return compromissos;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return Collections.emptyList();
+	}
+
 	public CompromissoVo findByCodigo(Integer codigo) {
 		String query = "SELECT c.rowid id, c.id_funcionario codigo_funcionario, f.nm_funcionario nome_funcionario, "
 				+ "c.id_agenda codigo_agenda, a.nm_agenda nome_agenda, c.dt_compromisso data, c.hr_compromisso horario "

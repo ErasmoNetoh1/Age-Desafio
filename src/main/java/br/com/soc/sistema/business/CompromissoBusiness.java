@@ -14,10 +14,6 @@ import br.com.soc.sistema.vo.FuncionarioVo;
 
 public class CompromissoBusiness {
 
-	private static final LocalTime INICIO_MANHA = LocalTime.of(7, 0);
-	private static final LocalTime INICIO_TARDE = LocalTime.of(12, 0);
-	private static final LocalTime FIM_EXPEDIENTE = LocalTime.of(18, 0);
-
 	private CompromissoDao dao;
 	private FuncionarioBusiness funcionarioBusiness;
 	private AgendaBusiness agendaBusiness;
@@ -116,23 +112,7 @@ public class CompromissoBusiness {
 	}
 
 	private void validarDisponibilidade(PeriodoDisponivel periodo, LocalTime horario) {
-		boolean horarioValido;
-
-		switch (periodo) {
-		case MANHA:
-			horarioValido = !horario.isBefore(INICIO_MANHA) && horario.isBefore(INICIO_TARDE);
-			break;
-		case TARDE:
-			horarioValido = !horario.isBefore(INICIO_TARDE) && horario.isBefore(FIM_EXPEDIENTE);
-			break;
-		case AMBOS:
-			horarioValido = !horario.isBefore(INICIO_MANHA) && horario.isBefore(FIM_EXPEDIENTE);
-			break;
-		default:
-			horarioValido = false;
-		}
-
-		if (!horarioValido)
+		if (!periodo.permiteHorario(horario))
 			throw new BusinessException("Horario nao esta disponivel para a agenda informada");
 	}
 

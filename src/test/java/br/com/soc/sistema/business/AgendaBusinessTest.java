@@ -3,6 +3,7 @@ package br.com.soc.sistema.business;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -122,5 +123,46 @@ public class AgendaBusinessTest {
 		new CompromissoBusiness().salvarCompromisso(compromisso);
 
 		agendaBusiness.excluirAgenda(agenda.getRowid());
+	}
+
+	@Test
+	public void naoDeveAlterarPeriodoQueInvalidaCompromissoExistente() {
+		String nomeFuncionario = "Funcionario da agenda alterada";
+		String nomeAgenda = "Agenda com horario da tarde";
+		FuncionarioBusiness funcionarioBusiness = new FuncionarioBusiness();
+		AgendaBusiness agendaBusiness = new AgendaBusiness();
+
+		funcionarioBusiness.salvarFuncionario(new FuncionarioVo(null, nomeFuncionario));
+		agendaBusiness.salvarAgenda(new AgendaVo(null, nomeAgenda, PeriodoDisponivel.AMBOS));
+
+		FuncionarioVo funcionario = funcionarioBusiness.trazerTodosOsFuncionarios()
+				.stream()
+				.filter(item -> item.getNome().equals(nomeFuncionario))
+				.findFirst()
+				.orElse(null);
+		AgendaVo agenda = agendaBusiness.trazerTodasAsAgendas()
+				.stream()
+				.filter(item -> item.getNome().equals(nomeAgenda))
+				.findFirst()
+				.orElse(null);
+
+		assertNotNull(funcionario);
+		assertNotNull(agenda);
+
+		CompromissoVo compromisso = new CompromissoVo();
+		compromisso.setCodigoFuncionario(funcionario.getRowid());
+		compromisso.setCodigoAgenda(agenda.getRowid());
+		compromisso.setData("2026-09-12");
+		compromisso.setHorario("16:00");
+		new CompromissoBusiness().salvarCompromisso(compromisso);
+
+		agenda.setPeriodoDisponivel(PeriodoDisponivel.MANHA);
+
+		try {
+			agendaBusiness.alterarAgenda(agenda);
+			fail("A alteracao deveria ser bloqueada");
+		} catch (BusinessException e) {
+			assertEquals(PeriodoDisponivel.AMBOS, agendaBusiness.buscarAgendaPor(agenda.getRowid()).getPeriodoDisponivel());
+		}
 	}
 }
