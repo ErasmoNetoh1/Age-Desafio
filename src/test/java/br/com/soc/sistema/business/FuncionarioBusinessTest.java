@@ -18,6 +18,16 @@ public class FuncionarioBusinessTest {
 		
 		new FuncionarioBusiness().salvarFuncionario(funcionario);
 	}
+
+	@Test(expected = BusinessException.class)
+	public void naoDeveSalvarFuncionarioComNomeApenasComEspacos() {
+		new FuncionarioBusiness().salvarFuncionario(new FuncionarioVo(null, "   "));
+	}
+
+	@Test(expected = BusinessException.class)
+	public void naoDeveAlterarFuncionarioComNomeApenasComEspacos() {
+		new FuncionarioBusiness().alterarFuncionario(new FuncionarioVo("1", "   "));
+	}
 	
 	@Test
 	public void deveAlterarNomeDeFuncionario() {

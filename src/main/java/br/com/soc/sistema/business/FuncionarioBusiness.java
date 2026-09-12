@@ -23,9 +23,7 @@ public class FuncionarioBusiness {
 	
 	public void salvarFuncionario(FuncionarioVo funcionarioVo) {
 		try {
-			if(funcionarioVo.getNome().isEmpty())
-				throw new IllegalArgumentException("Nome nao pode ser em branco");
-			
+			validarNome(funcionarioVo);
 			dao.insertFuncionario(funcionarioVo);
 		} catch (Exception e) {
 			throw new BusinessException("Nao foi possivel realizar a inclusao do registro");
@@ -35,9 +33,7 @@ public class FuncionarioBusiness {
 	
 	public void alterarFuncionario(FuncionarioVo funcionarioVo) {
 		try {
-			if(funcionarioVo.getNome().isEmpty()) {
-				throw new IllegalArgumentException("Nome não pode ser em branco");
-			}
+			validarNome(funcionarioVo);
 			dao.updateFuncionario(funcionarioVo);
 			
 		} catch(Exception e){
@@ -82,5 +78,10 @@ public class FuncionarioBusiness {
 		}catch (NumberFormatException e) {
 			throw new BusinessException(FOI_INFORMADO_CARACTER_NO_LUGAR_DE_UM_NUMERO);
 		}
+	}
+
+	private void validarNome(FuncionarioVo funcionarioVo) {
+		if (funcionarioVo == null || funcionarioVo.getNome() == null || funcionarioVo.getNome().trim().isEmpty())
+			throw new IllegalArgumentException("Nome nao pode ser em branco");
 	}
 }
