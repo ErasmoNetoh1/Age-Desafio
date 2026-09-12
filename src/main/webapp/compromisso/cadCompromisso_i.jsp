@@ -55,7 +55,8 @@
 					<div class="card-footer">
 						<div class="form-row">
 							<button class="btn btn-primary col-sm-4 offset-sm-1">Salvar</button>
-							<button type="reset" class="btn btn-secondary col-sm-4 offset-sm-2">Limpar Formulario</button>
+							<s:url action="novoCompromissos" var="limpar"/>
+							<a href="${limpar}" class="btn btn-secondary col-sm-4 offset-sm-2">Limpar Formulario</a>
 						</div>
 					</div>
 				</div>
