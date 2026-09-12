@@ -47,6 +47,23 @@ public class AgendaBusinessTest {
 	}
 
 	@Test
+	public void deveSalvarAgendaComNomeAcentuado() {
+		AgendaBusiness business = new AgendaBusiness();
+		String nome = "Manhã";
+
+		business.salvarAgenda(new AgendaVo(null, nome, PeriodoDisponivel.MANHA));
+
+		AgendaVo agenda = business.trazerTodasAsAgendas()
+				.stream()
+				.filter(item -> item.getNome().equals(nome))
+				.findFirst()
+				.orElse(null);
+
+		assertNotNull(agenda);
+		assertEquals(nome, agenda.getNome());
+	}
+
+	@Test
 	public void deveAlterarAgenda() {
 		AgendaBusiness business = new AgendaBusiness();
 		String nome = "Agenda para alterar";
