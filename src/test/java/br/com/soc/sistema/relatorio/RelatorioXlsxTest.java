@@ -26,6 +26,7 @@ public class RelatorioXlsxTest {
 		try (XSSFWorkbook planilha = new XSSFWorkbook(new ByteArrayInputStream(arquivo))) {
 			assertEquals("Funcionario", planilha.getSheetAt(0).getRow(0).getCell(1).getStringCellValue());
 			assertEquals("Maria", planilha.getSheetAt(0).getRow(1).getCell(1).getStringCellValue());
+			assertEquals("12/09/2026", planilha.getSheetAt(0).getRow(1).getCell(3).getStringCellValue());
 		}
 	}
 }

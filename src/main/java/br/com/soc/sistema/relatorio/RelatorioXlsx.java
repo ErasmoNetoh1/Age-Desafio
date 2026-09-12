@@ -44,7 +44,7 @@ public class RelatorioXlsx {
 		linha.createCell(0).setCellValue(compromisso.getRowid());
 		linha.createCell(1).setCellValue(compromisso.getNomeFuncionario());
 		linha.createCell(2).setCellValue(compromisso.getNomeAgenda());
-		linha.createCell(3).setCellValue(compromisso.getData());
+		linha.createCell(3).setCellValue(compromisso.getDataFormatada());
 		linha.createCell(4).setCellValue(compromisso.getHorario());
 	}
 }

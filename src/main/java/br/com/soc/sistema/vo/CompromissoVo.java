@@ -1,6 +1,11 @@
 package br.com.soc.sistema.vo;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 public class CompromissoVo {
+
+	private static final DateTimeFormatter FORMATO_DATA_BRASILEIRO = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
 	private String rowid;
 	private String codigoFuncionario;
@@ -44,6 +49,13 @@ public class CompromissoVo {
     public void setData(String data) {
         this.data = data;
     }
+
+	public String getDataFormatada() {
+		if (data == null || data.trim().isEmpty())
+			return "";
+
+		return LocalDate.parse(data).format(FORMATO_DATA_BRASILEIRO);
+	}
 
     public String getHorario() {
         return horario;

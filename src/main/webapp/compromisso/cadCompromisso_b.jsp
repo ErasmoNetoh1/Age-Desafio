@@ -38,7 +38,7 @@
 								<td>${rowid}</td>
 								<td>${nomeFuncionario}</td>
 								<td>${nomeAgenda}</td>
-								<td>${data}</td>
+								<td>${dataFormatada}</td>
 								<td>${horario}</td>
 								<td class="text-end">
 									<s:url action="editarCompromissos" var="editar">

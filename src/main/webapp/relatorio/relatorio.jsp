@@ -58,7 +58,7 @@
 								<td>${rowid}</td>
 								<td>${nomeFuncionario}</td>
 								<td>${nomeAgenda}</td>
-								<td>${data}</td>
+								<td>${dataFormatada}</td>
 								<td>${horario}</td>
 							</tr>
 						</s:iterator>
