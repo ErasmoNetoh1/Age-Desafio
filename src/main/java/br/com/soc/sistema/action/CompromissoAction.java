@@ -6,6 +6,7 @@ import java.util.List;
 import br.com.soc.sistema.business.AgendaBusiness;
 import br.com.soc.sistema.business.CompromissoBusiness;
 import br.com.soc.sistema.business.FuncionarioBusiness;
+import br.com.soc.sistema.exception.BusinessException;
 import br.com.soc.sistema.infra.Action;
 import br.com.soc.sistema.vo.AgendaVo;
 import br.com.soc.sistema.vo.CompromissoVo;
@@ -32,13 +33,19 @@ public class CompromissoAction extends Action {
 	}
 
 	public String salvar() {
-		if (compromissoVo.getRowid() == null || compromissoVo.getRowid().trim().isEmpty()) {
-			business.salvarCompromisso(compromissoVo);
-		} else {
-			business.alterarCompromisso(compromissoVo);
-		}
+		try {
+			if (compromissoVo.getRowid() == null || compromissoVo.getRowid().trim().isEmpty()) {
+				business.salvarCompromisso(compromissoVo);
+			} else {
+				business.alterarCompromisso(compromissoVo);
+			}
 
-		return REDIRECT;
+			return REDIRECT;
+		} catch (BusinessException e) {
+			addActionError(e.getMessage());
+			carregarDadosFormulario();
+			return INPUT;
+		}
 	}
 
 	public String editar() {
@@ -54,8 +61,14 @@ public class CompromissoAction extends Action {
 		if (compromissoVo.getRowid() == null || compromissoVo.getRowid().trim().isEmpty())
 			return REDIRECT;
 
-		business.excluirCompromisso(compromissoVo.getRowid());
-		return REDIRECT;
+		try {
+			business.excluirCompromisso(compromissoVo.getRowid());
+			return REDIRECT;
+		} catch (BusinessException e) {
+			addActionError(e.getMessage());
+			compromissos = business.trazerTodosOsCompromissos();
+			return SUCCESS;
+		}
 	}
 
 	private void carregarDadosFormulario() {

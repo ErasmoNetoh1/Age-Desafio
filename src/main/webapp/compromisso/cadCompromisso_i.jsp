@@ -22,6 +22,7 @@
 					</div>
 
 					<div class="card-body">
+						<s:actionerror cssClass="alert alert-danger"/>
 						<div class="row align-items-center">
 							<label for="id" class="col-sm-2 col-form-label text-center">Codigo:</label>
 							<div class="col-sm-2"><s:textfield cssClass="form-control" id="id" name="compromissoVo.rowid" readonly="true"/></div>

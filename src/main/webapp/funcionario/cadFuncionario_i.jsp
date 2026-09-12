@@ -27,6 +27,7 @@
 					</div>
 					
 					<div class="card-body">
+						<s:actionerror cssClass="alert alert-danger"/>
 						<div class="row align-items-center">
 							<label for="id" class="col-sm-1 col-form-label text-center">
 								Código:

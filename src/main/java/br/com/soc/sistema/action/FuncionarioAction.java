@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import br.com.soc.sistema.business.FuncionarioBusiness;
+import br.com.soc.sistema.exception.BusinessException;
 import br.com.soc.sistema.filter.FuncionarioFilter;
 import br.com.soc.sistema.infra.Action;
 import br.com.soc.sistema.infra.OpcoesComboBuscar;
@@ -26,10 +27,15 @@ public class FuncionarioAction extends Action {
 	public String filtrar() {
 		if(filtrar.isNullOpcoesCombo())
 			return REDIRECT;
-		
-		funcionarios = business.filtrarFuncionarios(filtrar);
-		
-		return SUCCESS;
+
+		try {
+			funcionarios = business.filtrarFuncionarios(filtrar);
+			return SUCCESS;
+		} catch (BusinessException e) {
+			addActionError(e.getMessage());
+			funcionarios = business.trazerTodosOsFuncionarios();
+			return SUCCESS;
+		}
 	}
 	
 	public String novo() {
@@ -38,13 +44,18 @@ public class FuncionarioAction extends Action {
 	}
 	
 	public String salvar() {
-		if (funcionarioVo.getRowid() == null || funcionarioVo.getRowid().trim().isEmpty()) {
-	        business.salvarFuncionario(funcionarioVo);
-	    } else {
-	        business.alterarFuncionario(funcionarioVo);
-	    }
+		try {
+			if (funcionarioVo.getRowid() == null || funcionarioVo.getRowid().trim().isEmpty()) {
+		        business.salvarFuncionario(funcionarioVo);
+		    } else {
+		        business.alterarFuncionario(funcionarioVo);
+		    }
 
-	    return REDIRECT;
+		    return REDIRECT;
+		} catch (BusinessException e) {
+			addActionError(e.getMessage());
+			return INPUT;
+		}
 	}
 	
 	public String editar() {
@@ -60,9 +71,14 @@ public class FuncionarioAction extends Action {
 		if (funcionarioVo.getRowid() == null || funcionarioVo.getRowid().trim().isEmpty())
 			return REDIRECT;
 
-		business.excluirFuncionario(funcionarioVo.getRowid());
-
-		return REDIRECT;
+		try {
+			business.excluirFuncionario(funcionarioVo.getRowid());
+			return REDIRECT;
+		} catch (BusinessException e) {
+			addActionError(e.getMessage());
+			funcionarios = business.trazerTodosOsFuncionarios();
+			return SUCCESS;
+		}
 	}
 	
 	public List<OpcoesComboBuscar> getListaOpcoesCombo(){

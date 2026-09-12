@@ -86,6 +86,7 @@
   		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.15.0</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -98,7 +99,7 @@
             <version>9.4.7.v20170914</version>
             <configuration>
                 <webApp>
-                    <contextPath>/${build.finalName}</contextPath>
+					<contextPath>/${project.build.finalName}</contextPath>
                 </webApp>
                 <stopKey>CTRL+C</stopKey>
                 <stopPort>8999</stopPort>

@@ -17,6 +17,7 @@
 			</div>
 
 			<div class="row">
+				<s:actionerror cssClass="alert alert-danger"/>
 				<s:form action="/gerarRelatorios.action" cssClass="card card-body mb-3">
 					<div class="row align-items-end">
 						<div class="col-sm-3">

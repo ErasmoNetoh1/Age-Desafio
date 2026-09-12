@@ -27,8 +27,13 @@ public class RelatorioAction extends Action {
 	}
 
 	public String gerar() {
-		compromissos.addAll(business.buscarCompromissosPorPeriodo(filtro));
-		return SUCCESS;
+		try {
+			compromissos.addAll(business.buscarCompromissosPorPeriodo(filtro));
+			return SUCCESS;
+		} catch (BusinessException e) {
+			addActionError(e.getMessage());
+			return SUCCESS;
+		}
 	}
 
 	public String exportar() {
@@ -41,6 +46,9 @@ public class RelatorioAction extends Action {
 			response.getOutputStream().write(arquivo);
 			response.flushBuffer();
 			return NONE;
+		} catch (BusinessException e) {
+			addActionError(e.getMessage());
+			return SUCCESS;
 		} catch (IOException e) {
 			throw new BusinessException("Nao foi possivel gerar o arquivo XLSX");
 		}

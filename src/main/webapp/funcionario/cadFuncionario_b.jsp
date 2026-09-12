@@ -35,6 +35,7 @@
 			</div>
 
 			<div class="row">
+				<s:actionerror cssClass="alert alert-danger"/>
 				<table class="table table-light table-striped align-middle">
 					<thead>
 						<tr>
