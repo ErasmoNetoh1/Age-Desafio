@@ -32,7 +32,7 @@
 						<s:iterator value="agendas">
 							<tr>
 								<td>${rowid}</td>
-								<td>${nome}</td>
+								<td><s:property value="nome" escapeHtml="true"/></td>
 								<td>${periodoDisponivel.descricao}</td>
 								<td class="text-end">
 									<s:url action="editarAgendas" var="editar">
